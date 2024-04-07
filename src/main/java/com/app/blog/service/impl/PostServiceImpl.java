@@ -1,5 +1,6 @@
 package com.app.blog.service.impl;
 
+import com.app.blog.dtos.PaginatedResponse;
 import com.app.blog.dtos.PostDto;
 import com.app.blog.entity.Post;
 import com.app.blog.exception.ResourceNotFoundException;
@@ -7,6 +8,10 @@ import com.app.blog.repository.IPostRepository;
 import com.app.blog.service.IPostService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,16 +37,25 @@ public class PostServiceImpl implements IPostService {
     }
 
     @Override
-    public List<PostDto> getAllPosts(){
+    public PaginatedResponse<PostDto> getAllPosts(Integer pageNo,Integer pageSize,String sortBy,String sortDir){
 
-        List<Post> posts = postRepository.findAll();
-
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())?Sort.by(sortBy).ascending():
+                                Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(pageNo,pageSize,sort);
+        Page<Post> pages = postRepository.findAll(pageable);
         List<PostDto> postDtoList = new ArrayList<>();
-        return posts.stream().map((post)->{
+        List<PostDto> postDto = pages.getContent().stream().map((post)->{
             PostDto dto = new PostDto();
             BeanUtils.copyProperties(post,dto);
             return dto;
         }).toList();
+        PaginatedResponse<PostDto> postResponse = new PaginatedResponse<>();
+        postResponse.setData(postDto);
+        postResponse.setPageNo(pages.getNumber());
+        postResponse.setPageSize(pages.getSize());
+        postResponse.setTotalElements(pages.getNumberOfElements());
+        postResponse.setLast(pages.isLast());
+        return postResponse;
     }
 
     @Override

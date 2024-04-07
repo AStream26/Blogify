@@ -1,5 +1,7 @@
 package com.app.blog.controller;
 
+import com.app.blog.Constant.AppConstants;
+import com.app.blog.dtos.PaginatedResponse;
 import com.app.blog.dtos.PostDto;
 import com.app.blog.service.IPostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,17 +27,20 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PostDto>> fetchAllPosts(){
+    public ResponseEntity<PaginatedResponse<PostDto>> fetchAllPosts(
+            @RequestParam(value = "pageNo",required = false,defaultValue = AppConstants.DEFAULT_PAGE_NO) Integer pageNo,
+            @RequestParam(value = "pageSize",required = false,defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer pageSize,
+            @RequestParam(value="sortBy", required = false, defaultValue = AppConstants.DEFAULT_SORT_BY ) String sortBy,
+            @RequestParam(value="sortDir",required = false, defaultValue = AppConstants.DEFAULT_SORT_DIR) String sortDir) {
         System.out.println("PostController.fetchAllPosts");
-        List<PostDto> posts = postService.getAllPosts();
-        return new ResponseEntity<List<PostDto>>(posts,HttpStatus.OK);
+        PaginatedResponse<PostDto> response = postService.getAllPosts(pageNo,pageSize,sortBy,sortDir);
+        return new ResponseEntity<PaginatedResponse<PostDto>>(response,HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<PostDto> fetchPostById(@PathVariable("id") UUID id){
         System.out.println("PostController.fetchPostById");
         PostDto post = postService.getPostById(id);
-
         return new ResponseEntity<PostDto>(post,HttpStatus.OK);
     }
 
@@ -52,6 +57,4 @@ public class PostController {
         postService.deletePostById(id);
         return new ResponseEntity<String>("Post entity deleted successfully",HttpStatus.OK);
     }
-
-
 }

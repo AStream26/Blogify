@@ -1,4 +1,4 @@
-package com.app.blog.exception;
+package com.app.blog.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

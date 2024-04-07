@@ -1,6 +1,6 @@
 package com.app.blog.advice;
 
-import com.app.blog.exception.ErrorDetail;
+import com.app.blog.dtos.ErrorDetail;
 import com.app.blog.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
