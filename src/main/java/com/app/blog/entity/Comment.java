@@ -30,7 +30,7 @@ public class Comment {
     LocalDateTime lastUpdatedAt;
 
     @CreationTimestamp
-    LocalDateTime createdAt;
+    LocalDateTime publishedAt;
 
     @ManyToOne
     Post post;

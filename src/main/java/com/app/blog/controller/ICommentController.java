@@ -14,7 +14,7 @@ import java.util.UUID;
 public interface ICommentController {
 
     @PostMapping
-    public ResponseEntity<CommentDto> createComment(@PathVariable UUID postId,@RequestBody CommentDto comment);
+     ResponseEntity<CommentDto> createComment(@PathVariable UUID postId,@RequestBody CommentDto comment);
 
     @GetMapping
     public ResponseEntity<PaginatedResponse<CommentDto>> fetchAllComments(
@@ -25,12 +25,12 @@ public interface ICommentController {
             @RequestParam(value = "sortDir", required = false, defaultValue = AppConstants.DEFAULT_SORT_DIR) String sortDir);
 
     @GetMapping("/{id}")
-    public ResponseEntity<CommentDto> fetchCommentById(@PathVariable UUID postId,@PathVariable("id") UUID id);
+    ResponseEntity<CommentDto> fetchCommentById(@PathVariable UUID postId,@PathVariable("id") UUID id);
 
     @PutMapping("/{id}")
-    public ResponseEntity<PostDto> updateCommentById(@PathVariable UUID postId,@PathVariable("id") UUID id, @RequestBody CommentDto comment);
+    ResponseEntity<CommentDto> updateCommentById(@PathVariable UUID postId,@PathVariable("id") UUID id, @RequestBody CommentDto comment);
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteCommentById(@PathVariable UUID postId,@PathVariable("id") UUID id);
+    ResponseEntity<String> deleteCommentById(@PathVariable UUID postId,@PathVariable("id") UUID id);
 
 }

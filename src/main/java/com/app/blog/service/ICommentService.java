@@ -9,7 +9,7 @@ import java.util.UUID;
 public interface ICommentService {
 
     CommentDto createComment(UUID postId,CommentDto comment);
-    PaginatedResponse<CommentDto> getAllPosts(UUID postId,CommentDto comment,Integer pageNo, Integer pageSize, String sortBy, String sortDir);
+    PaginatedResponse<CommentDto> getAllCommentByPostId(UUID postId,Integer pageNo, Integer pageSize, String sortBy, String sortDir);
 
     CommentDto getCommentById(UUID postId,UUID commentId);
 
