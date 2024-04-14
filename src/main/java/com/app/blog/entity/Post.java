@@ -27,7 +27,9 @@ public class Post {
     private String title;
     @Column(nullable = false)
     private String description;
+
     @Column(nullable = false,length = 1000)
+
     private String content;
 
     @CreationTimestamp

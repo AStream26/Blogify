@@ -4,6 +4,7 @@ import com.app.blog.Constant.AppConstants;
 import com.app.blog.dtos.PaginatedResponse;
 import com.app.blog.dtos.PostDto;
 import com.app.blog.service.IPostService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,7 @@ import java.util.UUID;
 @RequestMapping("/api/v1/posts")
 public interface IPostController {
     @PostMapping
-    public ResponseEntity<PostDto> createPost(@RequestBody PostDto post);
+    public ResponseEntity<PostDto> createPost(@Valid @RequestBody PostDto post);
 
     @GetMapping
     public ResponseEntity<PaginatedResponse<PostDto>> fetchAllPosts(
@@ -28,7 +29,7 @@ public interface IPostController {
     public ResponseEntity<PostDto> fetchPostById(@PathVariable("id") UUID id);
 
     @PutMapping("/{id}")
-    public ResponseEntity<PostDto> updatePostById(@PathVariable("id") UUID id,@RequestBody PostDto post);
+    public ResponseEntity<PostDto> updatePostById(@PathVariable("id") UUID id,@Valid @RequestBody PostDto post);
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletePostById(@PathVariable("id") UUID id);

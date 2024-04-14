@@ -6,11 +6,13 @@ import org.springframework.cglib.core.Local;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
+import java.util.Map;
+
 @Data
 @AllArgsConstructor
 public class ErrorDetail {
 
-    private String message;
-    private HttpStatus statusCode;
+    Object messages;
+    private Integer statusCode;
     private LocalDateTime time;
 }

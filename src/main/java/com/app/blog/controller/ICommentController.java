@@ -5,6 +5,7 @@ import com.app.blog.Constant.AppConstants;
 import com.app.blog.dtos.CommentDto;
 import com.app.blog.dtos.PaginatedResponse;
 import com.app.blog.dtos.PostDto;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +15,7 @@ import java.util.UUID;
 public interface ICommentController {
 
     @PostMapping
-     ResponseEntity<CommentDto> createComment(@PathVariable UUID postId,@RequestBody CommentDto comment);
+     ResponseEntity<CommentDto> createComment(@PathVariable UUID postId,@Valid @RequestBody CommentDto comment);
 
     @GetMapping
     public ResponseEntity<PaginatedResponse<CommentDto>> fetchAllComments(
@@ -28,7 +29,7 @@ public interface ICommentController {
     ResponseEntity<CommentDto> fetchCommentById(@PathVariable UUID postId,@PathVariable("id") UUID id);
 
     @PutMapping("/{id}")
-    ResponseEntity<CommentDto> updateCommentById(@PathVariable UUID postId,@PathVariable("id") UUID id, @RequestBody CommentDto comment);
+    ResponseEntity<CommentDto> updateCommentById(@PathVariable UUID postId,@PathVariable("id") UUID id,@Valid @RequestBody CommentDto comment);
 
     @DeleteMapping("/{id}")
     ResponseEntity<String> deleteCommentById(@PathVariable UUID postId,@PathVariable("id") UUID id);
