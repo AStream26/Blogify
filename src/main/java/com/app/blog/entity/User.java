@@ -26,7 +26,7 @@ public class User {
     private String name;
 
     @Column(nullable = false,unique = true)
-    @Length(min = 5,message = "username should be of min length 10")
+    @Length(min = 5,message = "username should be of min length ")
     private String username;
 
     @Column(nullable = false,unique = true)

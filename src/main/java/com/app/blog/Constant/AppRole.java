@@ -2,5 +2,5 @@ package com.app.blog.Constant;
 
 public enum AppRole {
 
-    ADMIN,USER
+    ROLE_ADMIN,ROLE_USER
 }

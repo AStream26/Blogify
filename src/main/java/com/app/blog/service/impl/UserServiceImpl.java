@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -17,15 +18,17 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements IUserService {
 
     @Autowired
-    IUserRepositery userRepository;
+    IUserRepositery userRepositery;
 
     @Override
-    public UserDetails loadUserByUsername(String userNameOrEmail) {
-        User user = userRepository.findByUsernameorEmail(userNameOrEmail, userNameOrEmail).orElseThrow(() -> new UsernameNotFoundException("username or email does not exist"));
+    public UserDetails loadUserByUsername(String userNameOrEmail) throws UsernameNotFoundException {
+        User user = userRepositery.findByUsernameOrEmail(userNameOrEmail, userNameOrEmail).orElseThrow(() -> new UsernameNotFoundException("username or email does not exist"));
 
         Set<GrantedAuthority> authorities = user.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.toString()))
                 .collect(Collectors.toSet());
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
+
+
     }
 }
