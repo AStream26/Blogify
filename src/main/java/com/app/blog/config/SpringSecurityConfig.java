@@ -2,21 +2,27 @@ package com.app.blog.config;
 
 
 import com.app.blog.service.IUserService;
+import jakarta.servlet.http.HttpServletRequest;
+import org.apache.catalina.connector.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -28,6 +34,13 @@ public class SpringSecurityConfig {
     @Autowired
     private BCryptPasswordEncoder encoder;
 
+    @Autowired
+    private JWTAuthenticationEntryPoint authenticationEntryPoint;
+
+    @Autowired
+    private JwtAuthenticationFilter authenticationFilter;
+
+
     @Bean
     AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
@@ -36,11 +49,20 @@ public class SpringSecurityConfig {
     @Bean
     SecurityFilterChain customFilterChain(HttpSecurity http) throws Exception {
 
+        System.out.println("SpringSecurityConfig.customFilterChain");
         http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(request->request.requestMatchers("/api/v1/auth/**")
-                        .permitAll().anyRequest().authenticated());
+                .authorizeHttpRequests((request)->request.requestMatchers(HttpMethod.GET,"/api/v1/posts/**")
+                .permitAll())
+                .authorizeHttpRequests((request)->request.requestMatchers("/api/v1/auth/**").permitAll()
+                        .anyRequest().authenticated())
+                .exceptionHandling((exception)->exception.authenticationEntryPoint(authenticationEntryPoint))
+                        .sessionManagement((session)->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+        http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
+
+
     /*
     @Bean
     UserDetailsService generateUserDetails(){

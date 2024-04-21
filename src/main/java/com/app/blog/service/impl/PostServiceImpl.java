@@ -2,16 +2,20 @@ package com.app.blog.service.impl;
 
 import com.app.blog.dtos.PaginatedResponse;
 import com.app.blog.dtos.PostDto;
+import com.app.blog.dtos.UserDetails;
+import com.app.blog.entity.Author;
 import com.app.blog.entity.Post;
 import com.app.blog.exception.ResourceNotFoundException;
 import com.app.blog.repository.IPostRepository;
 import com.app.blog.service.IPostService;
+import com.app.blog.utils.ObjectMapperUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,11 +32,15 @@ public class PostServiceImpl implements IPostService {
     @Override
     public PostDto createPost(PostDto postDto){
 
-        Post post = new Post();
-        BeanUtils.copyProperties(postDto,post);
+        Post post = ObjectMapperUtils.mapEntity(postDto,Post.class);
+        UserDetails currentAuthorDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Author author = new Author();
+        author.setId(currentAuthorDetails.getId());
+        post.setAuthor(author);
         Post newPost = postRepository.save(post);
         PostDto postSaved  = new PostDto();
         BeanUtils.copyProperties(newPost,postSaved);
+
         return postSaved;
     }
 
@@ -56,6 +64,19 @@ public class PostServiceImpl implements IPostService {
         postResponse.setTotalElements(pages.getNumberOfElements());
         postResponse.setLast(pages.isLast());
         return postResponse;
+    }
+
+    @Override
+    public List<PostDto> getAllPostsByUserId(UUID authorId) {
+        System.out.println("PostServiceImpl.getAllPostsByUserId");
+
+        List<Post> postList = postRepository.findByAuthorId(authorId);
+
+        List<PostDto> postDtoList  = postList.stream().map(post->{
+            PostDto dto = ObjectMapperUtils.mapEntity(post,PostDto.class);
+            return dto;
+        }).toList();
+        return postDtoList;
     }
 
     @Override
