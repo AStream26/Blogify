@@ -18,6 +18,6 @@ public interface IPostService {
     PostDto updatePostById(PostDto post,UUID postId);
 
     void deletePostById(UUID postId);
-
+     boolean hasPermissionToEdit(UUID id);
 
 }

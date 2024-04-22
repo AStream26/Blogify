@@ -17,7 +17,7 @@ public class CommentDto {
     @NotEmpty(message = "name should not be empty")
     private String name;
 
-    @NotBlank(message = "body should contain at ateast one character ")
+    @NotBlank(message = "body should contain at at-least one character ")
     private String body;
     private LocalDateTime lastUpdatedAt;
     private LocalDateTime publishedAt;

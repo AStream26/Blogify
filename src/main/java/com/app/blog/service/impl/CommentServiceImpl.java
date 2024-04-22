@@ -49,7 +49,7 @@ public class CommentServiceImpl implements ICommentService {
 
         List<CommentDto> commentDtoList = pages.getContent().stream().map(comment -> ObjectMapperUtils.mapEntity(comment, CommentDto.class)).toList();
         PaginatedResponse<CommentDto> postResponse = new PaginatedResponse<>();
-        postResponse.setData(commentDtoList);
+        postResponse.setList(commentDtoList);
         postResponse.setPageNo(pages.getNumber());
         postResponse.setPageSize(pages.getSize());
         postResponse.setTotalElements(pages.getNumberOfElements());

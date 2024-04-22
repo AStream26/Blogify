@@ -1,8 +1,10 @@
 package com.app.blog.config;
 
 import com.app.blog.exception.BlogAPIException;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -59,8 +61,17 @@ public class JwtTokenProvider {
             Jwts.parserBuilder().setSigningKey(getKey()).build().parse(token);
             return true;
         }
-        catch (JwtException exp){
-            throw new BlogAPIException(exp.getMessage(), HttpStatus.BAD_REQUEST);
+        catch (MalformedJwtException exp){
+            System.out.println("MalformedJwtException = " + exp.getMessage());
+            throw new BlogAPIException("InValid JWT Token",HttpStatus.BAD_REQUEST);
+        }
+        catch (ExpiredJwtException exp){
+            System.out.println("Expired JWT = " + exp.getMessage());
+            throw new BlogAPIException("JWT Token Expired",HttpStatus.BAD_REQUEST);
+        }
+        catch (Exception exp){
+            System.out.println("JwtTokenProvider.validateJWT");
+            throw new BlogAPIException(exp.getMessage(), HttpStatus.UNAUTHORIZED);
         }
     }
 

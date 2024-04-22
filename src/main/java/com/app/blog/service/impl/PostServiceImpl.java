@@ -23,12 +23,17 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@Service
+@Service("PostServiceImpl")
 public class PostServiceImpl implements IPostService {
 
     @Autowired
     private IPostRepository postRepository;
 
+    public boolean hasPermissionToEdit(UUID postId){
+        com.app.blog.dtos.UserDetails userDetails = (com.app.blog.dtos.UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Post post = postRepository.findById(postId).orElseThrow(()->new ResourceNotFoundException("Post","Id",postId.toString()));
+        return userDetails.getId().equals(post.getAuthor().getId());
+    }
     @Override
     public PostDto createPost(PostDto postDto){
 
@@ -58,7 +63,7 @@ public class PostServiceImpl implements IPostService {
             return dto;
         }).toList();
         PaginatedResponse<PostDto> postResponse = new PaginatedResponse<>();
-        postResponse.setData(postDto);
+        postResponse.setList(postDto);
         postResponse.setPageNo(pages.getNumber());
         postResponse.setPageSize(pages.getSize());
         postResponse.setTotalElements(pages.getNumberOfElements());
@@ -97,13 +102,11 @@ public class PostServiceImpl implements IPostService {
     public PostDto updatePostById(PostDto postDto, UUID postId) {
 
         Post post = postRepository.findById(postId).orElseThrow(()->new ResourceNotFoundException("Post","Id",postId.toString()));
-
+        System.out.println("PostServiceImpl.updatePostById");
         post.setTitle(postDto.getTitle());
         post.setDescription(postDto.getDescription());
         post.setContent(postDto.getContent());
-
         Post updatedPost = postRepository.save(post);
-        System.out.println("updatedPost = " + updatedPost);
         PostDto dto = new PostDto();
         BeanUtils.copyProperties(updatedPost,dto);
         return dto;

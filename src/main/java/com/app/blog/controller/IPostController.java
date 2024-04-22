@@ -3,6 +3,7 @@ package com.app.blog.controller;
 import com.app.blog.Constant.AppConstants;
 import com.app.blog.dtos.PaginatedResponse;
 import com.app.blog.dtos.PostDto;
+import com.app.blog.dtos.Response;
 import com.app.blog.service.IPostService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,14 +21,14 @@ public interface IPostController {
     public ResponseEntity<PostDto> createPost(@Valid @RequestBody PostDto post);
 
     @GetMapping
-    public ResponseEntity<PaginatedResponse<PostDto>> fetchAllPosts(
+    public ResponseEntity<Response<PaginatedResponse<PostDto>>> fetchAllPosts(
             @RequestParam(value = "pageNo",required = false,defaultValue = AppConstants.DEFAULT_PAGE_NO) Integer pageNo,
             @RequestParam(value = "pageSize",required = false,defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer pageSize,
             @RequestParam(value="sortBy", required = false, defaultValue = AppConstants.DEFAULT_SORT_BY ) String sortBy,
             @RequestParam(value="sortDir",required = false, defaultValue = AppConstants.DEFAULT_SORT_DIR) String sortDir);
 
     @GetMapping("/{id}")
-    public ResponseEntity<PostDto> fetchPostById(@PathVariable("id") UUID id);
+    public ResponseEntity<Response<PostDto>> fetchPostById(@PathVariable("id") UUID id);
 
     @PutMapping("/{id}")
     public ResponseEntity<PostDto> updatePostById(@PathVariable("id") UUID id,@Valid @RequestBody PostDto post);
