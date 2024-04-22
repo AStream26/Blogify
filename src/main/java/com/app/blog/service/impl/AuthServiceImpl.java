@@ -8,7 +8,7 @@ import com.app.blog.dtos.UserDto;
 import com.app.blog.entity.Author;
 import com.app.blog.entity.Role;
 import com.app.blog.exception.BlogAPIException;
-import com.app.blog.repository.IAuthorRepositery;
+import com.app.blog.repository.IAuthorRepository;
 import com.app.blog.repository.IRoleRepository;
 import com.app.blog.service.IAuthService;
 import com.app.blog.utils.ObjectMapperUtils;
@@ -29,7 +29,7 @@ public class AuthServiceImpl implements IAuthService {
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
-    private IAuthorRepositery authorRepositery;
+    private IAuthorRepository authorRepositery;
     @Autowired
     private PasswordEncoder passwordEncoder;
 

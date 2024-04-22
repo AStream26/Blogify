@@ -18,5 +18,5 @@ public class Role {
     private UUID id;
 
     @Column(nullable = false,unique = true)
-    private AppRole role;
+    private String role;
 }

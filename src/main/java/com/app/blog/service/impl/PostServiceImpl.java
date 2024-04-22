@@ -4,8 +4,10 @@ import com.app.blog.dtos.PaginatedResponse;
 import com.app.blog.dtos.PostDto;
 import com.app.blog.dtos.UserDetails;
 import com.app.blog.entity.Author;
+import com.app.blog.entity.Category;
 import com.app.blog.entity.Post;
 import com.app.blog.exception.ResourceNotFoundException;
+import com.app.blog.repository.ICategoryRepository;
 import com.app.blog.repository.IPostRepository;
 import com.app.blog.service.IPostService;
 import com.app.blog.utils.ObjectMapperUtils;
@@ -17,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -29,37 +32,43 @@ public class PostServiceImpl implements IPostService {
     @Autowired
     private IPostRepository postRepository;
 
-    public boolean hasPermissionToEdit(UUID postId){
+    @Autowired
+    private ICategoryRepository categoryRepository;
+
+    public boolean hasPermissionToEdit(UUID postId) {
         com.app.blog.dtos.UserDetails userDetails = (com.app.blog.dtos.UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Post post = postRepository.findById(postId).orElseThrow(()->new ResourceNotFoundException("Post","Id",postId.toString()));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "Id", postId.toString()));
         return userDetails.getId().equals(post.getAuthor().getId());
     }
-    @Override
-    public PostDto createPost(PostDto postDto){
 
-        Post post = ObjectMapperUtils.mapEntity(postDto,Post.class);
+    @Override
+    public PostDto createPost(PostDto postDto) {
+
+        Post post = ObjectMapperUtils.mapEntity(postDto, Post.class);
         UserDetails currentAuthorDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Category category = categoryRepository.findById(postDto.getCategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "Id", postDto.getCategoryId().toString()));
         Author author = new Author();
         author.setId(currentAuthorDetails.getId());
         post.setAuthor(author);
+        post.setCategory(category);
         Post newPost = postRepository.save(post);
-        PostDto postSaved  = new PostDto();
-        BeanUtils.copyProperties(newPost,postSaved);
-
+        PostDto postSaved = ObjectMapperUtils.mapEntity(newPost, PostDto.class);
+        postSaved.setCategoryId(newPost.getCategory().getId());
         return postSaved;
     }
 
     @Override
-    public PaginatedResponse<PostDto> getAllPosts(Integer pageNo,Integer pageSize,String sortBy,String sortDir){
+    public PaginatedResponse<PostDto> getAllPosts(Integer pageNo, Integer pageSize, String sortBy, String sortDir) {
 
-        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())?Sort.by(sortBy).ascending():
-                                Sort.by(sortBy).descending();
-        Pageable pageable = PageRequest.of(pageNo,pageSize,sort);
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() :
+                Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
         Page<Post> pages = postRepository.findAll(pageable);
         List<PostDto> postDtoList = new ArrayList<>();
-        List<PostDto> postDto = pages.getContent().stream().map((post)->{
+        List<PostDto> postDto = pages.getContent().stream().map((post) -> {
             PostDto dto = new PostDto();
-            BeanUtils.copyProperties(post,dto);
+            BeanUtils.copyProperties(post, dto);
             return dto;
         }).toList();
         PaginatedResponse<PostDto> postResponse = new PaginatedResponse<>();
@@ -77,8 +86,8 @@ public class PostServiceImpl implements IPostService {
 
         List<Post> postList = postRepository.findByAuthorId(authorId);
 
-        List<PostDto> postDtoList  = postList.stream().map(post->{
-            PostDto dto = ObjectMapperUtils.mapEntity(post,PostDto.class);
+        List<PostDto> postDtoList = postList.stream().map(post -> {
+            PostDto dto = ObjectMapperUtils.mapEntity(post, PostDto.class);
             return dto;
         }).toList();
         return postDtoList;
@@ -89,33 +98,33 @@ public class PostServiceImpl implements IPostService {
 
         Optional<Post> optional = postRepository.findById(postId);
 
-        if(optional.isEmpty()){
-            throw new ResourceNotFoundException("Post","Id",postId.toString());
+        if (optional.isEmpty()) {
+            throw new ResourceNotFoundException("Post", "Id", postId.toString());
         }
 
         PostDto post = new PostDto();
-        BeanUtils.copyProperties(optional.get(),post);
+        BeanUtils.copyProperties(optional.get(), post);
         return post;
     }
 
     @Override
     public PostDto updatePostById(PostDto postDto, UUID postId) {
 
-        Post post = postRepository.findById(postId).orElseThrow(()->new ResourceNotFoundException("Post","Id",postId.toString()));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "Id", postId.toString()));
         System.out.println("PostServiceImpl.updatePostById");
         post.setTitle(postDto.getTitle());
         post.setDescription(postDto.getDescription());
         post.setContent(postDto.getContent());
         Post updatedPost = postRepository.save(post);
         PostDto dto = new PostDto();
-        BeanUtils.copyProperties(updatedPost,dto);
+        BeanUtils.copyProperties(updatedPost, dto);
         return dto;
     }
 
     @Override
     public void deletePostById(UUID postId) {
 
-        Post post = postRepository.findById(postId).orElseThrow(()->new ResourceNotFoundException("Post","Id",postId.toString()));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "Id", postId.toString()));
 
         postRepository.deleteById(postId);
     }

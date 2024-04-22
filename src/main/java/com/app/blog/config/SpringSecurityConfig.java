@@ -50,7 +50,7 @@ public class SpringSecurityConfig {
 
         System.out.println("SpringSecurityConfig.customFilterChain");
         http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests((request)->request.requestMatchers(HttpMethod.GET,"/api/v1/posts/**")
+                .authorizeHttpRequests((request)->request.requestMatchers(HttpMethod.GET,"/api/v1/posts/**","/api/v1/category/**")
                 .permitAll())
                 .authorizeHttpRequests((request)->request.requestMatchers("/api/v1/auth/**").permitAll()
                         .anyRequest().authenticated())

@@ -22,6 +22,9 @@ public class PostDto {
     @NotBlank(message = "content should not be blank")
     private String content;
 
+    @NotNull(message = "post should belong to a category")
+    private UUID categoryId;
+
     private LocalDateTime publishedAt;
     private LocalDateTime lastUpdatedAt;
 }

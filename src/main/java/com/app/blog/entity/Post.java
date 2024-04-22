@@ -45,4 +45,8 @@ public class Post {
     @JoinColumn(name = "authorId",referencedColumnName = "id")
     private Author author;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "categoryId",referencedColumnName = "id")
+    private Category category;
+
 }
