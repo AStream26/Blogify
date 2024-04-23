@@ -64,7 +64,8 @@ public class AuthServiceImpl implements IAuthService {
         Author author = ObjectMapperUtils.mapEntity(registerDto,Author.class);
         author.setPassword(passwordEncoder.encode(registerDto.getPassword()));
         Set<Role> roles = new HashSet<>();
-        Role userRole = roleRepository.findByRole(AppRole.ROLE_USER).orElseThrow(() -> new Exception("server error"));
+        Role userRole = roleRepository.findByRole(AppRole.ROLE_USER.toString()).orElseThrow(() -> new Exception("server error"));
+        System.out.println("registerDto = " + userRole);
         roles.add(userRole);
         author.setRoles(roles);
         Author savedAuthor = authorRepositery.save(author);

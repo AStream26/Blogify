@@ -30,23 +30,23 @@ public class Author {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false,unique = true)
-    @Length(min = 5,message = "username should be of min length ")
+    @Column(nullable = false, unique = true)
+    @Length(min = 5, message = "username should be of min length ")
     private String username;
 
-    @Column(nullable = false,unique = true)
+    @Column(nullable = false, unique = true)
     @Email(message = "enter valid E-mail")
     private String email;
 
     @Column(nullable = false)
     private String password;
 
-    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    @JoinTable(name = "users_roles",joinColumns = @JoinColumn(name = "userId",referencedColumnName = "id")
-    , inverseJoinColumns = @JoinColumn(name = "roleId",referencedColumnName = "id"))
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "userId", referencedColumnName = "id")
+            , inverseJoinColumns = @JoinColumn(name = "roleId", referencedColumnName = "id"))
     Set<Role> roles;
 
-    @OneToMany(cascade = CascadeType.ALL,mappedBy = "author",fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "author", fetch = FetchType.LAZY)
     Set<Post> posts;
 
     @CreationTimestamp

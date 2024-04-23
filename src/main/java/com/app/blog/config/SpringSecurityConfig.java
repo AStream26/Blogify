@@ -2,6 +2,8 @@ package com.app.blog.config;
 
 
 import com.app.blog.service.IUserService;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.catalina.connector.Request;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@SecurityScheme(
+        name = "Bearer Authorization",
+        type = SecuritySchemeType.HTTP,
+        bearerFormat = "JWT",
+        scheme = "bearer"
+)
 public class SpringSecurityConfig {
 
     @Autowired
@@ -52,7 +60,8 @@ public class SpringSecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((request)->request.requestMatchers(HttpMethod.GET,"/api/v1/posts/**","/api/v1/category/**")
                 .permitAll())
-                .authorizeHttpRequests((request)->request.requestMatchers("/api/v1/auth/**").permitAll()
+                .authorizeHttpRequests((request)->request.requestMatchers("/api/v1/auth/**","swagger-ui/**","/v3/api-docs/**")
+                        .permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling((exception)->exception.authenticationEntryPoint(authenticationEntryPoint))
                         .sessionManagement((session)->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
