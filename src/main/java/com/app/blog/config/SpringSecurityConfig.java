@@ -60,7 +60,7 @@ public class SpringSecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((request)->request.requestMatchers(HttpMethod.GET,"/api/v1/posts/**","/api/v1/category/**")
                 .permitAll())
-                .authorizeHttpRequests((request)->request.requestMatchers("/api/v1/auth/**","swagger-ui/**","/v3/api-docs/**")
+                .authorizeHttpRequests((request)->request.requestMatchers("/api/v1/auth/**","/swagger-ui/**","/v3/api-docs/**")
                         .permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling((exception)->exception.authenticationEntryPoint(authenticationEntryPoint))

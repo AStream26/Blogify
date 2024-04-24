@@ -25,7 +25,7 @@ public class PostController implements IPostController {
     IPostService PostServiceImpl;
 
     public ResponseEntity<PostDto> createPost(PostDto post) {
-        System.out.println("post = " + post);
+       // System.out.println("post = " + post);
         PostDto response = PostServiceImpl.createPost(post);
         return new ResponseEntity<PostDto>(response, HttpStatus.CREATED);
     }

@@ -3,6 +3,7 @@ package com.app.blog.runners;
 import com.app.blog.entity.Role;
 import com.app.blog.repository.IRoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +19,6 @@ public class RoleSeeder implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         System.out.println("RoleSeeder.run");
-
         Role admin = new Role();
         admin.setRole("ROLE_ADMIN");
 
