@@ -58,18 +58,16 @@ public class SpringSecurityConfig {
 
         System.out.println("SpringSecurityConfig.customFilterChain");
         http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests((request)->request.requestMatchers(HttpMethod.GET,"/api/v1/posts/**","/api/v1/category/**")
+                .authorizeHttpRequests((request)->request.requestMatchers(HttpMethod.GET,"/api/v1/posts/**","/api/v1/category/**",
+                                "/swagger-ui/**","/v3/api-docs/**")
                 .permitAll())
-                .authorizeHttpRequests((request)->request.requestMatchers("/api/v1/auth/**","/swagger-ui/**","/v3/api-docs/**")
-                        .permitAll()
-                        .anyRequest().authenticated())
+                .authorizeHttpRequests((request)->request.requestMatchers("/api/v1/auth/**").permitAll())
+                .authorizeHttpRequests((request)->request.anyRequest().authenticated())
+                .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling((exception)->exception.authenticationEntryPoint(authenticationEntryPoint))
                         .sessionManagement((session)->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
-        http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
-
 
     /*
     @Bean

@@ -2,6 +2,7 @@ package com.app.blog.controller;
 
 import com.app.blog.dtos.PaginatedResponse;
 import com.app.blog.dtos.PostDto;
+import com.app.blog.dtos.Response;
 import com.app.blog.dtos.UserDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -18,19 +19,19 @@ import java.util.UUID;
 public interface IAuthorController {
 
     @Operation(
-            summary = "Get Post By User ID",
+            summary = "Get All Post By User ID or username",
             description = "It is used to fetch all the post created by an User"
     )
     @ApiResponse(
             responseCode = "200",
             description = "HTTP Status 200 OK"
     )
-    @GetMapping("/{authorId}/posts")
-    public ResponseEntity<List<PostDto>> fetchPostsByUserId(@PathVariable("authorId") UUID authorId);
+    @GetMapping("/{userIdOrUserName}/posts")
+    public ResponseEntity<Response<List<PostDto>>> fetchPostsByUserIdOrUserName(@PathVariable("userIdOrUserName") String userIdOrUserName);
 
     @Operation(
-            summary = "Get User by ID",
-            description = "It is used to get user details  by Id",
+            summary = "Get User by UserId or Username",
+            description = "It is used to get user details  by userId or userName",
             hidden = true
     )
     @ApiResponse(
@@ -38,11 +39,11 @@ public interface IAuthorController {
             description = "HTTP Status 201 OK"
     )
     @SecurityRequirement(name = "Bearer Authorization")
-    @GetMapping("/{userId}")
-    public ResponseEntity<UserDto> getUserDetails(@PathVariable("userId") UUID userId, @RequestBody UserDto userDto);
+    @GetMapping("/{userIdOrUserName}")
+    public ResponseEntity<Response<UserDto>> getUserDetails(@PathVariable("userIdOrUserName") String userIdOrUserName);
 
     @Operation(
-            summary = "Update User by ID",
+            summary = "Update User by userId or UserName",
             description = "It is used to update user details",
             hidden = true
     )
@@ -51,8 +52,8 @@ public interface IAuthorController {
             description = "HTTP Status 200 OK"
     )
     @SecurityRequirement(name = "Bearer Authorization")
-    @PutMapping("/{userId}")
-    public ResponseEntity<UserDto> updateUserDetails(@PathVariable("userId") UUID userId, @RequestBody UserDto userDto);
+    @PutMapping("/{userIdOrUserName}")
+    public ResponseEntity<UserDto> updateUserDetails(@PathVariable("userId") String userIdOrUserName, @RequestBody UserDto userDto);
 
     @Operation(
             summary = "Delete User by ID",

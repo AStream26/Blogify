@@ -11,13 +11,9 @@ public interface IPostService {
 
     PostDto createPost(PostDto post);
     PaginatedResponse<PostDto> getAllPosts(Integer pageNo,Integer pageSize,String sortBy,String sortDir);
-    List<PostDto> getAllPostsByUserId(UUID userId);
-
-    PostDto getPostById(UUID postId);
-
+    PostDto getPostBySlugOrId(String slugOrId);
     PostDto updatePostById(PostDto post,UUID postId);
-
     void deletePostById(UUID postId);
-     boolean hasPermissionToEdit(UUID id);
+    boolean hasPermissionToEdit(UUID id);
 
 }

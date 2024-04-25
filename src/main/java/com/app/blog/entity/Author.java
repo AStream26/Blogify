@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.User;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -47,7 +48,7 @@ public class Author {
     Set<Role> roles;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "author", fetch = FetchType.LAZY)
-    Set<Post> posts;
+    List<Post> posts;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

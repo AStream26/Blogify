@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface IPostRepository extends JpaRepository<Post, UUID> {
@@ -15,4 +16,6 @@ public interface IPostRepository extends JpaRepository<Post, UUID> {
     UUID getAuthorIdByPostId(UUID postId);
 
     Page<Post> findByCategoryId(UUID categoryId, Pageable pageable);
+
+    Optional<Post> findBySlug(String slug);
 }

@@ -18,17 +18,22 @@ public class RoleSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        System.out.println("RoleSeeder.run");
-        Role admin = new Role();
-        admin.setRole("ROLE_ADMIN");
+       try{
+           System.out.println("RoleSeeder.run");
+           Role admin = new Role();
+           admin.setRole("ROLE_ADMIN");
 
-        Role user = new Role();
-        user.setRole("ROLE_USER");
-        List<Role> roles = new ArrayList<>();
-        roles.add(admin);
-        roles.add(user);
-        roleRepository.saveAll(roles);
-        System.out.println("Roles Created Successfully");
+           Role user = new Role();
+           user.setRole("ROLE_USER");
+           List<Role> roles = new ArrayList<>();
+           roles.add(admin);
+           roles.add(user);
+           roleRepository.saveAll(roles);
+           System.out.println("Roles Created Successfully");
+       }
+       catch (Exception exp){
+           System.out.printf(exp.getMessage());
+       }
 
     }
 }

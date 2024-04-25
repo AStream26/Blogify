@@ -30,8 +30,9 @@ public class PostDto {
     private String content;
 
     @NotNull(message = "post should belong to a category")
-    private UUID categoryId;
+    private String category;
 
+    private String slug;
     private LocalDateTime publishedAt;
     private LocalDateTime lastUpdatedAt;
 }

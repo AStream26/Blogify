@@ -39,9 +39,9 @@ public class PostController implements IPostController {
     }
 
 
-    public ResponseEntity<Response<PostDto>> fetchPostById(UUID id) {
-        System.out.println("PostController.fetchPostById");
-        PostDto post = PostServiceImpl.getPostById(id);
+    public ResponseEntity<Response<PostDto>> fetchPostBySlugOrId(String slugOrId) {
+        System.out.println("PostController.fetchPostBySlugOrId");
+        PostDto post = PostServiceImpl.getPostBySlugOrId(slugOrId);
         Response<PostDto> response = new Response<>(ResponseStatus.SUCCESS,HttpStatus.OK.value(),post);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

@@ -10,6 +10,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -24,7 +25,7 @@ public class Category {
     private String description;
 
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "category")
-    Set<Post> posts;
+    List<Post> posts;
 
     @UpdateTimestamp
     LocalDateTime lastUpdatedAt;

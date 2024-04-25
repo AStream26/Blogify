@@ -46,15 +46,15 @@ public class PostServiceImpl implements IPostService {
 
         Post post = ObjectMapperUtils.mapEntity(postDto, Post.class);
         UserDetails currentAuthorDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Category category = categoryRepository.findById(postDto.getCategoryId())
-                .orElseThrow(() -> new ResourceNotFoundException("Category", "Id", postDto.getCategoryId().toString()));
+        Category category = categoryRepository.findByName(postDto.getCategory())
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "name", postDto.getCategory()));
         Author author = new Author();
         author.setId(currentAuthorDetails.getId());
         post.setAuthor(author);
         post.setCategory(category);
         Post newPost = postRepository.save(post);
         PostDto postSaved = ObjectMapperUtils.mapEntity(newPost, PostDto.class);
-        postSaved.setCategoryId(newPost.getCategory().getId());
+        postSaved.setCategory(newPost.getCategory().getName());
         return postSaved;
     }
 
@@ -69,6 +69,7 @@ public class PostServiceImpl implements IPostService {
         List<PostDto> postDto = pages.getContent().stream().map((post) -> {
             PostDto dto = new PostDto();
             BeanUtils.copyProperties(post, dto);
+            dto.setCategory(post.getCategory().getName());
             return dto;
         }).toList();
         PaginatedResponse<PostDto> postResponse = new PaginatedResponse<>();
@@ -80,30 +81,25 @@ public class PostServiceImpl implements IPostService {
         return postResponse;
     }
 
-    @Override
-    public List<PostDto> getAllPostsByUserId(UUID authorId) {
-        System.out.println("PostServiceImpl.getAllPostsByUserId");
-
-        List<Post> postList = postRepository.findByAuthorId(authorId);
-
-        List<PostDto> postDtoList = postList.stream().map(post -> {
-            PostDto dto = ObjectMapperUtils.mapEntity(post, PostDto.class);
-            return dto;
-        }).toList();
-        return postDtoList;
-    }
 
     @Override
-    public PostDto getPostById(UUID postId) {
+    public PostDto getPostBySlugOrId(String slugOrId){
 
-        Optional<Post> optional = postRepository.findById(postId);
-
-        if (optional.isEmpty()) {
-            throw new ResourceNotFoundException("Post", "Id", postId.toString());
+        Optional<Post> optional;
+        try{
+            UUID postId = UUID.fromString(slugOrId);
+            optional = postRepository.findById(postId);
+        }catch (IllegalArgumentException exception){
+            optional = postRepository.findBySlug(slugOrId);
         }
 
+        if (optional.isEmpty()) {
+            throw new ResourceNotFoundException("Post", "Id", slugOrId.toString());
+        }
+        System.out.println("PostServiceImpl.getPostBySlugOrId" + optional.get().getAuthor());
         PostDto post = new PostDto();
         BeanUtils.copyProperties(optional.get(), post);
+        post.setCategory(optional.get().getCategory().getName());
         return post;
     }
 
@@ -115,6 +111,12 @@ public class PostServiceImpl implements IPostService {
         post.setTitle(postDto.getTitle());
         post.setDescription(postDto.getDescription());
         post.setContent(postDto.getContent());
+
+        if(!postDto.getCategory().equals(post.getCategory().getName())){
+            Category category = categoryRepository.findByName(postDto.getCategory())
+                    .orElseThrow(() -> new ResourceNotFoundException("Category", "name", postDto.getCategory()));
+            post.setCategory(category);
+        }
         Post updatedPost = postRepository.save(post);
         PostDto dto = new PostDto();
         BeanUtils.copyProperties(updatedPost, dto);

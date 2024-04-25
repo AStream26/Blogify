@@ -1,5 +1,6 @@
 package com.app.blog.entity;
 
+import com.app.blog.utils.SlugUtils;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,25 +29,31 @@ public class Post {
     private String title;
     @Column(nullable = false)
     private String description;
-
     @Column(nullable = false,length = 1000)
-
     private String content;
+
+    @Column(nullable = true,unique = true)
+    private String slug;
 
     @CreationTimestamp
     private LocalDateTime publishedAt;
     @UpdateTimestamp
     private LocalDateTime lastUpdatedAt;
 
-    @OneToMany(cascade = CascadeType.ALL,mappedBy = "post")
-    private Set<Comment> comments;
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "post",fetch = FetchType.LAZY)
+    private List<Comment> comments;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "authorId",referencedColumnName = "id")
     private Author author;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "categoryId",referencedColumnName = "id")
     private Category category;
+
+    @PrePersist
+    private void generateSlug(){
+        this.slug = SlugUtils.generateSlug(this.title);
+    }
 
 }

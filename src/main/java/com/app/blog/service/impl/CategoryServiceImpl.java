@@ -86,10 +86,9 @@ public class CategoryServiceImpl implements ICategoryService {
                 Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
         Page<Post> posts = postRepository.findByCategoryId(categoryId,pageable);
-
         List<PostDto> postDtoList = posts.getContent().stream().map(post -> {
             PostDto postDto = ObjectMapperUtils.mapEntity(post, PostDto.class);
-            postDto.setCategoryId(post.getCategory().getId());
+            postDto.setCategory(post.getCategory().getName());
             return postDto;
         }).toList();
 

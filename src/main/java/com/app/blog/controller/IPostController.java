@@ -52,15 +52,15 @@ public interface IPostController {
 
 
     @Operation(
-            summary = "Get Post By ID",
-            description = "It is used to fetch post by Id"
+            summary = "Get Post By ID or Slug",
+            description = "It is used to fetch post by id or slug"
     )
     @ApiResponse(
             responseCode = "200",
             description = "HTTP Status 200 OK"
     )
-    @GetMapping("/{id}")
-    public ResponseEntity<Response<PostDto>> fetchPostById(@PathVariable("id") UUID id);
+    @GetMapping("/{slugOrId}")
+    public ResponseEntity<Response<PostDto>> fetchPostBySlugOrId(@PathVariable("slugOrId") String slugOrId);
 
     @Operation(
             summary = "Update Post By ID",
